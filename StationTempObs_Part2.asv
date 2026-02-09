@@ -79,32 +79,26 @@ title('Rate of temperature change from 1960 to present (C per decade)')
 %each station
 % Initialize arrays to hold all the output from the for loop you will write
 % below
-P_projected = NaN(length(sta), 2);
-Projected_temp_average = NaN(length(sta), 1);
-Projected_temp_std = NaN(length(sta), 1);%<--
+P_projected = NaN(length(sta), 2);%<--
+
+for i = 1:length(sta)
+    station = sta(i);
+    [baseline, P_projected] = StationModelProjections(station);
+    P_p(i,1) = P_all_sta(1);
+    P_all(i,2) = P_all_sta(2);
+    P_recent(i,1) = P_recent_sta(1);
+    P_recent(i,2) = P_recent_sta(2);
+end
 
 % Write a for loop that will use the function StationModelProjections to
 % extract from the model projections for each station:
 % 1) the mean and standard deviation of the baseline period
 % (2006-2025) temperatures, 2) the annual mean temperature anomaly, and 3)
 % the slope and y-intercept of the linear trend over the 21st century
-for i = 1:length(sta)
-    station = sta(i);
-    [baseline, P_projected_sta] = StationModelProjections(station);
-    Projected_temp_average(i,1) = baseline(1);
-    Projected_temp_std(i,1) = baseline(2);
-    P_projected(i,1) = P_projected_sta(1);
-    P_projected(i,2) = P_projected_sta(2);
-end%<--
+%<--
 
 %% 5. Plot a global map of the rate of temperature change projected at each station over the 21st century
-figure(3); clf
-worldmap('World')
-load coastlines
-plotm(coastlat,coastlon)
-temp_change = P_projected(:,1);
-scatterm(lat, lon, 100, temp_change, "filled")
-title('Rate of projected temperature change from 2006 to  (C per decade)')%<--
+%<--
 
 %% 6a. Plot a global map of the interannual variability in annual mean temperature at each station
 %as determined by the baseline standard deviation of the temperatures from

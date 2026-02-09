@@ -1,4 +1,4 @@
-function [baseline_model, P] = StationModelProjections(station_number)
+%function [baseline_model, P] = StationModelProjections(station_number)
 
 % StationModelProjections Analyze modeled future temperature projections at individual stations
 %===================================================================
@@ -6,21 +6,20 @@ function [baseline_model, P] = StationModelProjections(station_number)
 % USAGE:  [OUTPUTS] = StationModelProjections(INPUTS) <--update here
 %
 % DESCRIPTION:
-%   Use this function to calculate the annual climatology model projections
-%   and trend over the projected period, for projection 
-%   data from all stations in the Global Historical
-%   Climatology Network (GHCN)
+%   **Add your description here**
 %
 % INPUT:
 %    staton_number: Number of the station from which to analyze historical temperature data
+%    **Describe any other inputs you choose to include**
 %
 % OUTPUT:
 %    baseline_model: [mean annual temperature over baseline period
 %       (2006-2025); standard deviation of temperature over baseline period]
 %    P: slope and intercept for a linear fit to annual mean temperature
 %       values over the full 21st century modeled period
+%   **list any other outputs you choose to include**
 %
-% AUTHOR: Sara, Ilana, Madeline, February 9 2026
+% AUTHOR: Sara, Ilana, Madeline
 %
 % REFERENCE:
 %    Written for EESC 4464: Environmental Data Exploration and Analysis, Boston College
@@ -31,6 +30,7 @@ function [baseline_model, P] = StationModelProjections(station_number)
 %==================================================================
 
 %% Read and extract the data from your station from the csv file
+station_number = 40300;
 filename = ['model' num2str(station_number) '.csv'];
 %Extract the year and annual mean temperature data
 %<--
@@ -55,10 +55,10 @@ baseline_model = [baselineMean, baselineStd];
 %% Calculate the 5-year moving mean smoothed annual mean temperature anomaly over the modeled period
 % Note that you could choose to provide these as an output if you want to
 % have these values available to plot.
-anomaly = tempAnnMean - baselineMean; %<-- anomaly
+anomaly = annualTemp - baselineMean; %<-- anomaly
 m = movmean(anomaly,5); %<-- smoothed anomaly
 
 %% Calculate the linear trend in temperature this station over the modeled 21st century period
-P = polyfit(stationdata.Year, anomaly, 1);%<--
+P_all = polyfit(stationdata.Year, anomaly, 1);%<--
 
-end
+%end
