@@ -1,4 +1,4 @@
-function [baseline_model, P] = StationModelProjections(station_number)
+function [baseline_model, P] = StationModelProjections(station_number, end_year)
 
 % StationModelProjections Analyze modeled future temperature projections at individual stations
 %===================================================================
@@ -13,12 +13,15 @@ function [baseline_model, P] = StationModelProjections(station_number)
 %
 % INPUT:
 %    staton_number: Number of the station from which to analyze historical temperature data
+%    end_year: year through which to calculate the projected temperature
+%    change
 %
 % OUTPUT:
 %    baseline_model: [mean annual temperature over baseline period
 %       (2006-2025); standard deviation of temperature over baseline period]
 %    P: slope and intercept for a linear fit to annual mean temperature
 %       values over the full 21st century modeled period
+%    
 %
 % AUTHOR: Sara, Ilana, Madeline, February 9 2026
 %
@@ -34,10 +37,9 @@ function [baseline_model, P] = StationModelProjections(station_number)
 filename = ['model' num2str(station_number) '.csv'];
 %Extract the year and annual mean temperature data
 %<--
-stationdata = readtable(filename);
-year = stationdata(:,1);
-tempAnnMean = stationdata(:,2);
-tempArray = table2array(tempAnnMean);
+stationdata = readtable(filename, 'VariableNamingRule','preserve');
+years = stationdata{:,1};
+tempAnnMean = stationdata{:,2};
 
 %% Calculate the mean and standard deviation of the annual mean temperatures
 %  over the baseline period over the first 20 years of the modeled 21st
@@ -46,9 +48,10 @@ tempArray = table2array(tempAnnMean);
 %  with both values called baseline_model
  %<-- (this will take multiple lines of code - see the procedure you
  %followed in Part 1 for a reminder of how you can do this)
-baseline = find(stationdata.Year>=2006 & stationdata.Year<=2025);
-baselineMean = mean(tempArray(baseline));
-baselineStd = std(tempArray(baseline));
+baseline = find(years >= 2006 & years <= 2025);
+end_year_index = find(years == end_year);
+baselineMean = mean(tempAnnMean(baseline));
+baselineStd = std(tempAnnMean(baseline));
 baseline_model = [baselineMean, baselineStd];
 
 
@@ -59,6 +62,6 @@ anomaly = tempAnnMean - baselineMean; %<-- anomaly
 m = movmean(anomaly,5); %<-- smoothed anomaly
 
 %% Calculate the linear trend in temperature this station over the modeled 21st century period
-P = polyfit(stationdata.Year, anomaly, 1);%<--
+P = polyfit(stationdata.Year(1:end_year_index), anomaly(1:end_year_index), 1);%<--
 
 end
